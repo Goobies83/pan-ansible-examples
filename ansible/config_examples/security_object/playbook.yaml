@@ -10,8 +10,8 @@
     - name: Create a new device group in specified VSYS
       panos_object:
         ip_address: "10.0.131.80"
-        username: "vannapa"
-        password: "Aia@143143143"
+        username: "aasdasdas"
+        password: "asdla;lsd;lak"
         vsys: 'vsys1'  # Specify the VSYS here
         object_type: 'address-group'
         name: 'New_Device_Group'
