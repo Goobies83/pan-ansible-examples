@@ -1,5 +1,5 @@
 # inventory.yml
 
 [firewalls]
-CorpTestFirewall ansible_host=10.0.131.80 ansible_connection=local
+10.0.131.80 ansible_host=10.0.131.80 ansible_connection=local
 
