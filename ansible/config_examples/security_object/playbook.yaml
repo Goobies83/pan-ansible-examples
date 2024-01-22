@@ -2,7 +2,10 @@
 - name: Create Device Group in a Specific VSYS
   hosts: CorpTestFirewall
   gather_facts: no
-
+  collections:
+    - paloaltonetworks.panos
+    - ansible.utils
+  
   tasks:
     - name: Create a new device group in specified VSYS
       panos_object:
