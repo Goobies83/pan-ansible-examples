@@ -1,6 +1,6 @@
 ---
 - name: Create Device Group in a Specific VSYS
-  hosts: panorama
+  hosts: 10.10.10.244
   gather_facts: no
   collections:
     - paloaltonetworks.panos
