@@ -11,11 +11,11 @@
       panos_object:
         name: "{{ object_vsys }}"
         #vsys: 'vsys1'  # Specify the VSYS here
-        name: "{{ object_host }}"
+        name: "{{ object_ip_address }}"
         #ip_address: "10.10.10.233"
         name : "{{ object_username }}"
         #username: "Gobi"
-        name: "{{ object_password }}"
+        name: "{{ object_api_key }}"
         #password: "ITCE_1234"
         object_type: 'address-group'
         name: 'New_Device_Group'
