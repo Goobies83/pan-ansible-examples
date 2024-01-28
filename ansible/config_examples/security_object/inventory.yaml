@@ -1,5 +1,5 @@
 # inventory.yml
 
 [firewalls]
-10.10.10.233 ansible_host=FW
+10.10.10.233 ansible_host=FW ansible_connection=local
 
