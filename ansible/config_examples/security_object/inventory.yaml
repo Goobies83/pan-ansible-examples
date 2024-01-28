@@ -1,5 +1,5 @@
 # inventory.yml
 
-[FW]
-FW ansible_host=10.10.10.233 # ansible_connection=local
+#[FW]
+#FW ansible_host=10.10.10.233 # ansible_connection=local
 
