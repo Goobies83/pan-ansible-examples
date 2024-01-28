@@ -1,6 +1,6 @@
 ---
 - name: Create Device Group in a Specific VSYS
-  hosts: 10.0.131.80
+  hosts: FW
   gather_facts: no
   collections:
     - paloaltonetworks.panos
