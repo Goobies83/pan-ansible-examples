@@ -1,36 +1,29 @@
----
-- name: Create Device Group in a Specific VSYS
-  hosts: 10.10.10.244
-  gather_facts: no
-  collections:
-    - paloaltonetworks.panos
-    - ansible.utils
-  
- tasks:
-    - name: Create Device Group
-      panos_device_group:
-        name: "{{ object_vsys }}"
-        name: "{{ device_group_name }}"
-        parent: "shared"
-        template: "{{ template_name }}"
-      register: device_group_result
+- hosts: all
+  connection: local
+  gather_facts: False
 
-    - name: Display Result
-      debug:
-        var: device_group_result
-        #vsys: 'vsys1'  # Specify the VSYS here
-        #name: "{{ object_ip_address }}"
-        #ip_address: "10.10.10.233"
-        #name : "{{ object_username }}"
-        #username: "Gobi"
-        #name: "{{ object_api_key }}"
-        #password: "ITCE_1234"
-        #object_type: 'address-group'
-        #name: 'New_Device_Group'
-        #description: 'Description of the device group'
-        # Additional required parameters...
-      #register: result
+  tasks:
+    - name: "Create an object in Panorama via API"
+      uri:
+        url: "https://{{ ansible_host }}/api/"
+        method: POST
+        body_format: form-urlencoded
+        body: >
+          type=config&action=set&key={{ lookup('env', 'pan_api_key') }}&
+          xpath=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='{{ device_group }}']/address&
+          element=<entry name='{{ object_name }}'><fqdn>{{ value }}</fqdn></entry>
+        validate_certs: no
+      register: response
 
-    - name: Display the result
+    - name: Commit changes on Panorama via API
+      uri:
+        url: "https://{{ ansible_host }}/api/"
+        method: POST
+        body_format: form-urlencoded
+        body: "type=commit&cmd=<commit></commit>&key={{ lookup('env', 'pan_api_key') }}"
+        validate_certs: no
+      register: commit_response
+
+    - name: Debug API response
       debug:
-        var: result
+        var: response
