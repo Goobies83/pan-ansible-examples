@@ -9,9 +9,12 @@
   tasks:
     - name: Create a new device group in specified VSYS
       panos_object:
-        ip_address: "10.10.10.245"
-        username: "Gobi"
-        password: "ITCE_1234"
+        name: "{{ object_ip }}"
+        #ip_address: "10.10.10.233"
+        name : "{{ object_username }}"
+        #username: "Gobi"
+        name: "{{ object_password }}"
+        #password: "ITCE_1234"
         name: "{{ object_vsys }}"
         #vsys: 'vsys1'  # Specify the VSYS here
         object_type: 'address-group'
