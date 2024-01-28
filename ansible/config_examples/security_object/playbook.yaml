@@ -6,22 +6,30 @@
     - paloaltonetworks.panos
     - ansible.utils
   
-  tasks:
-    - name: Create a new device group in specified VSYS
-      panos_object:
+ tasks:
+    - name: Create Device Group
+      panos_device_group:
         name: "{{ object_vsys }}"
+        name: "{{ device_group_name }}"
+        parent: "shared"
+        template: "{{ template_name }}"
+      register: device_group_result
+
+    - name: Display Result
+      debug:
+        var: device_group_result
         #vsys: 'vsys1'  # Specify the VSYS here
-        name: "{{ object_ip_address }}"
+        #name: "{{ object_ip_address }}"
         #ip_address: "10.10.10.233"
         #name : "{{ object_username }}"
         #username: "Gobi"
         #name: "{{ object_api_key }}"
         #password: "ITCE_1234"
-        object_type: 'address-group'
-        name: 'New_Device_Group'
-        description: 'Description of the device group'
+        #object_type: 'address-group'
+        #name: 'New_Device_Group'
+        #description: 'Description of the device group'
         # Additional required parameters...
-      register: result
+      #register: result
 
     - name: Display the result
       debug:
