@@ -1,0 +1,42 @@
+- hosts: all
+  connection: local
+  gather_facts: False
+
+  tasks:
+    - name: "Retrieve source object details"
+      uri:
+        url: "https://{{ ansible_host }}/api/"
+        method: POST
+        body_format: form-urlencoded
+        body: >
+          <request>
+            <type>config</type>
+            <action>get</action>
+            <key>{{ lookup('env', 'pan_api_key') }}</key>
+            <xpath>/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/address/entry[@name='{{ source_object_name }}']</xpath>
+          </request>
+        validate_certs: no
+      register: source_object_response
+
+    - name: "Print source object details"
+      debug:
+        var: source_object_response.json
+
+    - name: "Retrieve destination object details"
+      uri:
+        url: "https://{{ ansible_host }}/api/"
+        method: POST
+        body_format: form-urlencoded
+        body: >
+          <request>
+            <type>config</type>
+            <action>get</action>
+            <key>{{ lookup('env', 'pan_api_key') }}</key>
+            <xpath>/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/address/entry[@name='{{ destination_object_name }}']</xpath>
+          </request>
+        validate_certs: no
+      register: destination_object_response
+
+    - name: "Print destination object details"
+      debug:
+        var: destination_object_response.json
