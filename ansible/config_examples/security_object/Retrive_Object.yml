@@ -14,13 +14,12 @@
             <action>get</action>
             <key>{{ lookup('env', 'pan_api_key') }}</key>
             <xpath>/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/address/entry[@name='{{ source_object_name }}']</xpath>
-          </request>
         validate_certs: no
       register: source_object_response
 
-   - name: "Print source object details"
-     debug:
-      msg: "{{ source_object_response.content | b64decode | from_xml }}"
+    - name: "Print source object details"
+      debug:
+        msg: "{{ source_object_response.content | b64decode | from_yaml }}"
 
     - name: "Retrieve destination object details"
       uri:
@@ -33,10 +32,9 @@
             <action>get</action>
             <key>{{ lookup('env', 'pan_api_key') }}</key>
             <xpath>/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/address/entry[@name='{{ destination_object_name }}']</xpath>
-          </request>
         validate_certs: no
       register: destination_object_response
 
     - name: "Print destination object details"
       debug:
-       msg: "{{ destination_object_response.content | b64decode | from_xml }}"
+        msg: "{{ destination_object_response.content | b64decode | from_yaml }}"
