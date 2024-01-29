@@ -9,7 +9,7 @@
         method: POST
         body_format: form-urlencoded
         body: >
-          type=config&action=get&key={{ pan_api_key }}&
+          type=config&action=set&key={{ lookup('env', 'pan_api_key') }}&
           xpath=/config/.../address/entry[@name='{{ source_object_name }}']
         validate_certs: no
       register: source_object_response
@@ -20,7 +20,7 @@
         method: POST
         body_format: form-urlencoded
         body: >
-          type=config&action=get&key={{ pan_api_key }}&
+          type=config&action=set&key={{ lookup('env', 'pan_api_key') }}&
           xpath=/config/.../address/entry[@name='{{ destination_object_name }}']
         validate_certs: no
       register: destination_object_response
