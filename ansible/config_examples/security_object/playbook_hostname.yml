@@ -7,7 +7,7 @@
         url: "https://{{ panorama_ip }}/api/"
         method: GET
         body_format: form-urlencoded
-        body: "type=config&action=get&key={{ lookup('env', 'pan_api_key') }}&xpath=/config/your-object-type/entry[@name='{{ object_name }}']"
+        body: "type=config&action=get&key={{ lookup('env', 'pan_api_key') }}&xpath=/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/address/entry[@name='{{ object_name }}']"
         validate_certs: no
       register: object_details
 
