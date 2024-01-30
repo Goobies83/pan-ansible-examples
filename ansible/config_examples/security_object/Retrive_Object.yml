@@ -1,8 +1,8 @@
 - hosts: all
-  connection: local
   gather_facts: False
+
   tasks:
-    - name: "Retrieve Object Details from Panorama"
+    - name: Retrieve Object Details from Panorama
       uri:
         url: "https://{{ ansible_host }}/api/"
         method: GET
@@ -10,9 +10,8 @@
         body: "type=config&action=get&key={{ lookup('env', 'pan_api_key') }}&xpath=/config/your-object-type/entry[@name='{{ object_name }}']"
         validate_certs: no
       register: object_details
-      ignore_errors: yes
 
-    - name: "Check API Response Status Code"
-      fail:
-        msg: "Failed to retrieve object details. Status code: {{ object_details.status }}"
-      when: object_details.status != 200
+    - name: Store Object Details in a Temp File
+      copy:
+        content: "{{ object_details.content }}"
+        dest: "/tmp/panorama_object_details.xml"
