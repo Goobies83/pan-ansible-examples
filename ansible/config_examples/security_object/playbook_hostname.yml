@@ -13,7 +13,7 @@
 
     - name: "Parse Object Details"
       set_fact:
-        object_exists: "{{ object_details.content | b64decode | from_xml | json_query(query) | length > 0 }}"
+        object_exists: "{{ object_details.content | b64decode | xml2json | from_json | json_query(query) | length > 0 }}"
       vars:
         query: "your-query-to-extract-object-details"
 
