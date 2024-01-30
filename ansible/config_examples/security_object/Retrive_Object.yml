@@ -14,5 +14,5 @@
 
     - name: Store Object Details in a Temp File
       copy:
-        content: "{{ object_details.content }}"
+        content: "{{ object_name }}"
         dest: "/tmp/panorama_object_details.xml"
