@@ -19,4 +19,4 @@
 
     - name: "Print source object details"
       debug:
-        msg: "{{ source_object_response.content | b64decode | from_yaml }}"
+        msg: "{{ source_object_response.content | b64decode | from_xml }}"
