@@ -47,7 +47,7 @@
        body_format: form-urlencoded
        body: "type=commit&cmd=<commit></commit>&key={{ lookup('env', 'pan_api_key') }}"
        validate_certs: no
-     register: commit_response
+      register: commit_response
 
      - name: Pause before pushing changes
        pause:
@@ -60,4 +60,4 @@
         body_format: form-urlencoded
         body: "type=commit&action=all&cmd=<commit-all></commit-all>&key={{ lookup('env', 'pan_api_key') }}"
         validate_certs: no
-      register: push_response
+       register: push_response
