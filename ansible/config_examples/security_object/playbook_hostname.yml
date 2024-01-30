@@ -2,6 +2,11 @@
   connection: local
   gather_facts: False
 
+  vars:
+    device_group: "your_device_group"
+    hostname: "your_hostname"
+    domain_name: "your_domain_name"
+
   tasks:
     - name: "Create an object in Panorama via API"
       uri:
@@ -10,8 +15,8 @@
         body_format: form-urlencoded
         body: >
           type=config&action=set&key={{ lookup('env', 'pan_api_key') }}&
-          xpath=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='{{ device_group }}']template/entry[@name='{{ hostname }}']&element=<hostname>{{ hostname }}</hostname><domain>{{ domain_name }}</domain></entry>"
-          #element=<entry name='{{ object_name }}'><fqdn>{{ value }}</fqdn></entry>
+          xpath=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='{{ device_group }}']/template/entry[@name='{{ hostname }}']&
+          element=<hostname>{{ hostname }}</hostname><domain>{{ domain_name }}</domain></entry>
         validate_certs: no
       register: response
 
