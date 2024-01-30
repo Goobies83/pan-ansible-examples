@@ -1,63 +1,31 @@
-- hosts: all
-  connection: local
+- hosts: localhost
   gather_facts: False
-
   tasks:
-    - name: "Change Panorama hostname and domain name via API"
+    - name: "Retrieve Object Details from Panorama"
       uri:
         url: "https://{{ panorama_ip }}/api/"
-        method: POST
+        method: GET
         body_format: form-urlencoded
-        body: >
-          type=config&action=set&key={{ lookup('env', 'pan_api_key') }}&
-          xpath=/config/mgt-config/devices/entry[@name='localhost.localdomain']&
-          element=<hostname>{{ new_hostname }}</hostname><domain>{{ new_domain_name }}</domain>
+        body: "type=config&action=get&key={{ lookup('env', 'pan_api_key') }}&xpath=/config/your-object-type/entry[@name='{{ object_name }}']"
         validate_certs: no
-      register: response
+      register: object_details
 
-    - name: Commit changes on Panorama via API
-      uri:
-        url: "https://{{ panorama_ip }}/api/"
-        method: POST
-        body_format: form-urlencoded
-        body: "type=commit&cmd=<commit></commit>&key={{ lookup('env', 'pan_api_key') }}"
-        validate_certs: no
-      register: commit_response
+    - name: "Parse Object Details"
+      set_fact:
+        object_exists: "{{ object_details.content | b64decode | from_xml | json_query(query) | length > 0 }}"
+      vars:
+        query: "your-query-to-extract-object-details"
 
-    - name: Push changes on Panorama via API
-      uri:
-        url: "https://{{ panorama_ip }}/api/"
-        method: POST
-        body_format: form-urlencoded
-        body: "type=commit&action=all&cmd=<commit-all></commit-all>&key={{ lookup('env', 'pan_api_key') }}"
-        validate_certs: no
-      register: push_response
-      
-    - name: Debug API responses
+    - name: "Print Object Details"
       debug:
-        var: response
-      with_items:
-        - "{{ response }}"
-        - "{{ commit_response }}"
-        - "{{ push_response }}"
-    - name: Commit changes on Panorama via API
-      uri:
-       url: "https://{{ panorama_ip }}/api/"
-       method: POST
-       body_format: form-urlencoded
-       body: "type=commit&cmd=<commit></commit>&key={{ lookup('env', 'pan_api_key') }}"
-       validate_certs: no
-      register: commit_response
+        var: object_details.content
 
-    - name: Pause before pushing changes
-      pause:
-        seconds: 60  # Adjust the delay as needed
+    - name: "Check if Object Exists"
+      debug:
+        msg: "Object '{{ object_name }}' exists on Panorama."
+      when: object_exists
 
-    - name: Push changes on Panorama via API
-      uri:
-       url: "https://{{ panorama_ip }}/api/"
-       method: POST
-       body_format: form-urlencoded
-       body: "type=commit&action=all&cmd=<commit-all></commit-all>&key={{ lookup('env', 'pan_api_key') }}"
-       validate_certs: no
-      register: push_response
+    - name: "Check if Object Does Not Exist"
+      debug:
+        msg: "Object '{{ object_name }}' does not exist on Panorama."
+      when: not object_exists
