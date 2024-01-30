@@ -1,22 +1,18 @@
 - hosts: all
   connection: local
   gather_facts: False
-
   tasks:
-    - name: "Retrieve source object details"
+    - name: "Retrieve Object Details from Panorama"
       uri:
         url: "https://{{ ansible_host }}/api/"
-        method: POST
+        method: GET
         body_format: form-urlencoded
-        body: >
-          <request>
-            <type>config</type>
-            <action>get</action>
-            <key>{{ lookup('env', 'pan_api_key') }}</key>
-            <xpath>/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/address/entry[@name='{{ source_object_name }}']</xpath>
+        body: "type=config&action=get&key={{ lookup('env', 'pan_api_key') }}&xpath=/config/your-object-type/entry[@name='{{ object_name }}']"
         validate_certs: no
-      register: source_object_response
+      register: object_details
+      ignore_errors: yes
 
-    - name: "Print source object details"
-      debug:
-        msg: "{{ source_object_response.content | b64decode | from_xml }}"
+    - name: "Check API Response Status Code"
+      fail:
+        msg: "Failed to retrieve object details. Status code: {{ object_details.status }}"
+      when: object_details.status != 200
