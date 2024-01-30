@@ -40,6 +40,24 @@
         - "{{ response }}"
         - "{{ commit_response }}"
         - "{{ push_response }}"
-    #- name: Debug API response after push
-      #debug:
-        #var: push_response
+    - name: Commit changes on Panorama via API
+      uri:
+       url: "https://{{ panorama_ip }}/api/"
+       method: POST
+       body_format: form-urlencoded
+       body: "type=commit&cmd=<commit></commit>&key={{ lookup('env', 'pan_api_key') }}"
+       validate_certs: no
+     register: commit_response
+
+     - name: Pause before pushing changes
+       pause:
+        seconds: 60  # Adjust the delay as needed
+
+     - name: Push changes on Panorama via API
+       uri:
+        url: "https://{{ panorama_ip }}/api/"
+        method: POST
+        body_format: form-urlencoded
+        body: "type=commit&action=all&cmd=<commit-all></commit-all>&key={{ lookup('env', 'pan_api_key') }}"
+        validate_certs: no
+      register: push_response
