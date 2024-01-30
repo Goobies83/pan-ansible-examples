@@ -32,7 +32,14 @@
         body: "type=commit&action=all&cmd=<commit-all></commit-all>&key={{ lookup('env', 'pan_api_key') }}"
         validate_certs: no
       register: push_response
-
-    - name: Debug API response after push
+      
+    - name: Debug API responses
       debug:
-        var: push_response
+        var: item.content
+      with_items:
+        - "{{ response }}"
+        - "{{ commit_response }}"
+        - "{{ push_response }}"
+    #- name: Debug API response after push
+      #debug:
+        #var: push_response
