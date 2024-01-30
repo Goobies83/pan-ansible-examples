@@ -1,32 +1,48 @@
 - hosts: all
   connection: local
   gather_facts: False
+
   tasks:
-    - name: "Retrieve Object Details from Panorama"
+    - name: "Create an object in Panorama via API"
       uri:
-        url: "https://{{ panorama_ip }}/api/"
+        url: "https://{{ ansible_host }}/api/"
+        method: POST
+        body_format: form-urlencoded
+        body: >
+          type=config&action=set&key={{ lookup('env', 'pan_api_key') }}&
+          xpath=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='{{ device_group }}']/address&
+          element=<entry name='{{ object_name }}'><fqdn>{{ value }}</fqdn></entry>
+        validate_certs: no
+      register: response
+
+    - name: "Commit changes on Panorama via API"
+      uri:
+        url: "https://{{ ansible_host }}/api/"
+        method: POST
+        body_format: form-urlencoded
+        body: "type=commit&cmd=<commit></commit>&key={{ lookup('env', 'pan_api_key') }}"
+        validate_certs: no
+      register: commit_response
+
+    - name: "Retrieve object details from Panorama"
+      uri:
+        url: "https://{{ ansible_host }}/api/"
         method: GET
         body_format: form-urlencoded
-        body: "type=config&action=get&key={{ lookup('env', 'pan_api_key') }}&xpath=/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/address/entry[@name='{{ object_name }}']"
+        body: "type=config&action=get&key={{ lookup('env', 'pan_api_key') }}&xpath=/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='{{ device_group }}']/address/entry[@name='{{ object_name }}']"
         validate_certs: no
       register: object_details
 
-    - name: "Parse Object Details"
-      set_fact:
-        object_exists: "{{ object_details.content | b64decode | xml2json | from_json | json_query(query) | length > 0 }}"
-      vars:
-        query: "your-query-to-extract-object-details"
-
-    - name: "Print Object Details"
+    - name: Debug API response
       debug:
-        var: object_details.content
+        var: response
 
-    - name: "Check if Object Exists"
+    - name: "Check if object exists on Panorama"
       debug:
         msg: "Object '{{ object_name }}' exists on Panorama."
-      when: object_exists
+      when: object_details.status == 200
 
-    - name: "Check if Object Does Not Exist"
+    - name: "Check if object does not exist on Panorama"
       debug:
         msg: "Object '{{ object_name }}' does not exist on Panorama."
-      when: not object_exists
+      when: object_details.status != 200
