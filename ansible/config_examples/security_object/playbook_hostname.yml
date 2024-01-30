@@ -1,13 +1,7 @@
 - hosts: all
   connection: local
   gather_facts: False
-
-  vars:
-    panorama_ip: "your_panorama_ip"
-    api_key: "{{ lookup('env', 'pan_api_key') }}"
-    new_hostname: "your_new_hostname"
-    new_domain_name: "your_new_domain_name"
-
+  
   tasks:
     - name: "Change Panorama hostname and domain name via API"
       uri:
