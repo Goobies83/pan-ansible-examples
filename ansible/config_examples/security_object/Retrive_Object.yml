@@ -18,4 +18,4 @@
         dest: "/home/gobi/tmpfld/panorama_object_details.xml"
       become: yes
       become_user: gobi
-      become_method: sudo
+      #become_method: sudo
