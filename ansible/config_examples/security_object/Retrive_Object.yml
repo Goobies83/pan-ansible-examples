@@ -16,6 +16,6 @@
       copy:
         content: "{{ object_name }}"
         dest: "/home/gobi/tmpfld/panorama_object_details.xml"
-      become: yes
-      become_user: gobi
+      #become: yes
+      #become_user: gobi
       #become_method: sudo
